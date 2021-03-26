@@ -1,0 +1,58 @@
+import base64
+import zipfile
+import codecs
+import json
+import xmltodict
+a="UEsDBBQACQAIALpheFIAAAAAAAAAAAAAAAAjAAAAb2ZmbGluZWFhZGhhYXIyMDIxMDMyNDEyMTM1MzY4NS54bWzBB0RmDm0MoJAh/14Sp5OcAUo4ObMe0+DXalNuifAdZK+Zpuu1b+p5q2hePteKx6M15SZ6TBUij+Ju/YC1y33EHYawZM8ooAJM1Ck3BFbGj+c2TdeRod50sKwWAwHt8WWBwaLb/BVUlbW0nwJOhmgZhthdiATVQ6b4ismO4yi0oKNoSbYjQVmyjcuwg3r0DRZ1dVC99UQyOs2LU7dkNFaWZktnxcIQeCzj8WAYcXXdi6Dvf67tc5K1HX5KvFSfd4Gj81NY5digcLpc+X/fLqPf7AEidycWJ2a9dIOwZ21PjG6wjtLypkOG9qvD1cyMk8eXOVIQni85TW1PlMfW6Bntf6LaVm1N8LxH95k5rSHjpPlrTMF0ujSkgpJWUtEHe1GmwI/uEgNav4vWZizYAhcm6xkJBDych/9laJeUzYbW5DMccpbFZgShZ8xKoisBuasZ8RS5hWJIofmmt9Jz5pQq0EkWdczvMfSVTYD680O+H2OHC/F9V0Qg5PWskMX02gyeDatBbXIFppiCSxBW0mr7Tx725rB7kYpEABP+VvJoz7Qg3BBMrDDa4Am9f4SEoSEkkuRL8wILPyIiZDuLRsYVBrzExnt+sDwQwNv81nzlF/f372qHlqPmY4WRyp2EGQKJSfZQo4kRYsEFfsdPWvLgeBPJYekRA9I3BENBXQvqPXy2RYm3H6pOHkotvWt6moq2TUbiaO1PUHQTdikfgXQCWCM3ZljpdJQTIB1KILmT67SrBKeBoq8wQQafyQyUyMyS/k1TSIQCHER1FBMTf5ZibTr2TrwJVN/biL2kcyqISD+/NV7pyXXQnKWiehc4qPxv2P34gWYKyyR7HtkzjNcp50njUNfbouYQfJG88aZV86X2zqf0uYK+zl8E84TovVsp/8UYTC5+qzv8D+SGJJQ3QH02dY0rNhaRtWe2+hv0ektICaEqZCD4/TwD5YB66P3qcE08KeQb1muGL/jBRfsc6SYY8NutqK+jxqLz3ZCC66U9E8sklBdnBunoVIhGTzNJWHcmwY7U4JL9Hhec7PvCrKYxYfijWHGW2K9MbB7ZKjKQ8M13UiQGomtoH2n2S6ZkF4aqj3cHSvqeixMgpiOYqiu7qmEkLyyDd7mff22mqaYwMpGf2amG0CIm21po8SC/Douq9Em3CgPzCdnoHoIXyaWS3r/MCsIxJ7ZWBJgSqObNsGZ8T/NvRx0FcAuV9GiTdG0c7aYj7KA/Ul3o25LdBTTlgzcmOv+FZaHw36Urpj2v1Cg++Ym7HNv/B3vYVcpL1a/9Xtync+mPxoLT779kPAip8ixAiN4HJHBRZF+bPrHNUs3Ox9MRz1McYONgW+MYWGQ+/QFpNhMvB4JxgMt/K5ejqGUJv6fSKM6pi05BoTjJ/no3prwbtKrmyQLPsKYqlA3peeHzRKLfVje0pag+oNNAGLPo++2ZeP57WhoQmyNOhjJZ0x1u6Vek78FLdFXWdZjOd8z0D2Hb3RehuTJCpqByXwyg2tQh4zg57Fja7uXfEEsCVFz3mAxgqDUJvTC95KAAm69lSX20+21VV+gklI/Mm/do0bo59bmcYgslz9GRklm2d1qjNKT+5UTKu9xEV5DQ/bDOWo7gmwgsHSKoR8P4YchjbuT96C+1YUje32+EWf2tHHbf4Z6ECv80eJlHOOdiBzPoiAgKANB2ZlMFkhFPrkKwMQNjrDVH4W0QxjjM7HZdLbWyhTitFdnRjIop+W/l36ouxzQjgaLdoYv7ibqrTov0dPJqYQpFqGTpvvgSJdg3ys/dhpYMOl7yT7MzI9El4UEVBF9xPI3z2++KkCXXUhwBOrpCM3DZR0ELlqWpId/7+ZuXWqu0O6MO4n0qMq3oknRQ+NyDIDT42IkuWYcoVIV36uHukGXQeUma1gd+jPjNv9LIRxOhCtfyFJe8ofCI7OdPaILdKQh+DE5TOqb0tYmsOyf7eyX48jg+QlRzYMPpG6hmaPsa2eKYBbvazzkEzsMDxahmcqIFyvPbV3aQIkpkyl8TbToQIrpG70OKPrmxdFoZJrqq6Le1m/ZEok5h98HRjjmFeLA0WndnaW8fXWFI6WnyVjbcJzC2aQGl5R/w2EQrO507cHOMctCWemtRB91L1Q6Oay526Q4YuH9c7/Ma0GlLfLfhLS/rjcmr3+rM4awkTuoyAgGXAPMDmjzEIJZYKUIjpugWNk57BAZQa3jHbg9JkCdlvUAy0rFFj0jNPyaQ9kSnCyBE+05JMgkq6S4l2IX+TEyrAttscVh3mZ6M2G72MSrm8UNoeBEAsa1AMNQX4jlcHPT1F8vURZBUDJyUzyl6nE4NRGndL89C+R4kC8rMSfjBLksCcus5bNNFJquIHLLkmXGKUiZOAK7cNKeDeCYFRgt5rmcn2w53eetib/gu+jm1sqXZdGatxp1oKrB9MpGK5gbWycvoFB7F9dZclp3j412KLYooeeK7730+YQDxxXg9YIFg5xiJtDm8VYvpFxra8EAIGMsv5W4ysiKsaBrwOKbDaymFPV7bZFK01S8ppVvesNhbc57tYxZvU9fzYMJ1mXnGxRyogx1M8oeFXu/z13H8Yd4nV3jxW+oOqEv7kRmvRPy6vqWmY08Q16MnIBYM4BM/25DGEXPXYtSfvgphItuHpQYWxvB8mkCbv8p/DurQ+c2g4Kvx809MKgUHuwxgie5JiCbWPO8MRcbc+ubMuP2K/DwFieMN6Ol2GzkE+CP+pU7qd0Sj6q3ySDTgWJRQuG3mGFWQTKIeAjRq5wqrou6kmag4M1mkBuqc4082tSrbR5mSH2QM3I4Mm6Z1WlpKCBZoEKadAlIziOKMhO5kh6/3RY14WPToA7IQn68yAirHBDVexVE59eSXx3ajF2aT0PX8jM4eTm2jERHxAE45hl+VGuww752eUQewQixI3hnF9W18Izujw/QSZ+4ibAA8guiVeFNoRSidW1Ku8qPdHw6EbgEItzNLUvE7Xf8Nwd2LtB5uwzv81Vwaiu5Mu6674+UVISralUGbNyoEnaTBtBui5G5iSFArMztzIQ8AXFsG6cvO3+Ij9ZA/EHa1LfHIZ+COtfRu9l6v3Z+Mvg6opYqJbdipoph/nWU2Rxd5in4XS2/K1fu38IufKexSx/5uVKOv9yiBWgjQ5vkJqtRnk74bFmjapxBA2adiRV3sykGCD6prZf8pA8y86bYu2zAGjF1XRv+tOYUOz/pqIKM0yIup80NDT20HB8pkkZP+nVxo258ZfuIwlAqcm6MZwCgoe9kqZu0nGOFCOr+2/KxLoW36RVoYyJLVs+vUElIaYEZqBJM6oyD8Rbwvx/4yNgOUnDoRcDtaApRkCVxDrXgH29Ira/qAX9mKxYCtZiZryKRtE23ny94xaQrxRvBkSHk0uQ92c3xmJGCPZGc5m7jTRQkjGtq2Os0SPc+ZpLJJfG1CIc5KXtdmzp5i5dMAnwX0nABpXYj5KP/PQIvjev8m4+2ZWTS+uVCrBq1WpdQ62PY6KVzP+YxEPS3IcIBhjfYvHTYtN9tnn5LAuZF8Xe0wrdcumVBb5S7koeXZ9jU0BSOPiR4FAkPaW3xuGV7syzSjPi3okdIN4/W8w5VwMW7GiyXTaAGQ8oTEIfH4EO8hVVnD6XHcsMFYjjHpstevO4qKDQU8R0w2tg9KZ63MuNlE01jjhZ6lRVd5KNLFLLl+BffSRM1GXTzGnB7KNXvLsCAH9pqog2YVvcgiCyJbn230tRF6J7M7aUCchn6WZFGWRBKabBLMDeHOeDQukkmZavO/L7aDoH4JzqC6Q0qxTa3G3SWdPoQRt69YTi2mT7DEbQGEiCBKKXPPakLtXhqDl0uBPTuCKsN9+9Rjg9gi+/4zVk/NmhZtiMApVVPg6qsS9ICjf0i5oZuVPdwuW3dB9b7vNmY60Pa+sOqwSnqhJX/R8M5uRPjzIE5AX34WsrttRHxy7MYZi5juX6FURLEaojDkcBDaU/BXjc3zZU4lG9kGAKvUh6NluJNtEjFqhxsH2H0Ece59WqYRD45ArdWIU6QLyHSm4/jPy2xLHnZklRztg5MFqwPsIIgY7ZOpO8U5jomYplrOpG7uwB/+4p/iB9pp8s/vSlCNZY4OiszcElNdnWM//ikhdcSe/I+b+tiMHl5ww4VRa5RbA7CIKK8RX6j41O/vQ9EYWVXygN1sIL5BTIjKavf/zBQGtyGJpcM1ebsmnLB7E5UZrFkIpUGCtrZUYl48XBs+AJOaUZ8dBAcgR2QRx8y9Kk54TOjONjwhVhBqq2gMj3B2yYG0o/2WHLbmtc+UcE/0Qa2fN9+2KvfN9fVrE+gViFy4oP0ITNrNpNdaOE+wIvgECnzItjVZJLvBHEYrE1CRN8pNkEw1MO7W4FuxJjQ2jMLekudZB5C8PY0YUwMTMUMtxgcxoLLoJToAJpz+Pz3cm4hk+vy9uixsy3PWuXIyJLQ9RgBR9qoQDZYg7FfntCYW1SPPVJujexqV9nfSGs7WskSxZHO8hYwg2F1gnVaIrzJjHf/8T514XcQRV1jOk3DX+W5XgG4fQnEmW8ZeWllmLY98ADeIw1CrdHg6RpbiFOqE32RBYrhWaquKTDOUzwWV2H6NepIhued0bgDQWTIw5nhhyPu9D/2uH5ON7kNpsxp5oVn3452E5A7myueZVVOc2bunhXYrQS421uEGrnuf2i4vrOCjvWBPRBd9Nc6dGtkMcF5n9Is1r9FZYsgx+cLJo3K5EUpcQEo7g2467Gskblrw1IOc/31Kg49+Mnc8dKkYMdZYervglT5GRoouCfmUET3IUSau/DeCrDoo4MEh4J7ag3nq4UeKWD9ByKVyV2Pyk1EHnHu944M2CE3f1TXdjK4VsMWmN5bSekm7pqgOG5INnDVzcEIGgGwwI/hM6ZHxBDnDxm5E7WZ7R3dHa3jBMuCMr4y/H3qr/aPyhTMuj59EOugeO+U5CvYs2k3O8GnJVCLVL8NwnWD9KVWoi5Q63B3IgIq2sKHGAV+3b3gIw/l8yGb2TbCzW2kJzDtey9i4yxExSY4leAqcX6EmD4+8YQaCOJ6294y2xjPHd9aw5yF07nH3HNnIlVfY2FWGLPaZtdOgdhZtCuGgAFomeTdrw4m8U6zg5W4igBMD9lt2aK1BSUZcyMde93nWlbW6qz6r2Saxo7CxSqyI802kLZim5SUZFM8AL24fzWsG+Sg29XW4++JEOn+w75LktbNX4FlSD8dLvgKQ4/Ii3fhdz4Ai41TcBaaZHXqpKZoYqaorVaUXP98WpLV/bd7ZS5wDjDoVfQ87f5ZvGELjkGEhbNqPp5EbUuDQFeW/pJqCf8rHHjW0i9CizrW8fqFPI2W8lXO4/e9ki3D96BKwUzm3XiRco186YJMdVFhB4TyK4jmetuNt5KpL7VaefL20atDcJfuAxqrBNyIriyExA9+KpZSNFZ7qYqrJ6TRnxTDJroCzvucCONPIPA2GSbn77c99dnEhLaoTz8JmHbihqLuI8p9rA6tCJotlC9e5BKvd2HTWtOgFppita7Bg88SbOb7DZTuWfyVdh0YkUboO04K5BJKdsAd4bnR/ig+7KOeyxCJIKhbdDYZjL3JsCK7wpq66MdGXEReof81RbkqEfx54Z6lF06GjEG2VI6JgyEDEeF6pvekhladjIXz9GEujEAq0jf8w8k7f1wB5h18VDhTbgGmcgXDs2qOblIaWRVDqDIXuh0PVVeL4esTv7LgJ+yy5TwEH8+ws0qUPhzURxTsRp6qi1T4CnxnmFs69KGQKq4W4hp611sgJnIIj3eQv+cFMrUgmrb0tkb//D56KgoydGMTb9DhFIlS4r4He+tGpyNNaqtFnuqahRyhgieAG0oLCGr0crznJ8qDumVUC5tlsKynUWnwYj0gHJvOGO3zzA+g2o5ZjbdHMNp34zFhQSWOgSjLfe2wsFEiTnBN9RQi+29lKH/DZeqrdwTIDYIhpXPr7GDC16T6WP6vzvZUkrnABWY/f+wyO2ki6aucRyyCMk99sAD+P8DUmWP94zChFgHCPrKgLIMb6P4t8HAegJurecRRuEBWehA+ZcJtUgtWbcqyQMY+qz1n8Uf+60OkYPhe3edWNwcfRQz7xWqyj9Tn8EQGJUlTmjGFmUsvp29raWjwoSh25lUs1fKm3FDJ5I9cRRlsVw8Jl+cWETcI85I9Zres9WOEePNvCBKutH7W+U9/0w8GM+me5eEHYKiw+plwXf3xHoPsyJf30x6edgIyH8z9dzWE94Rk7f3xCKCDelb6VDTPeQTUAetcMfFT0/45tq4hQ4Lg0pvKdUFSlvUVO9A7Oh4DTecJ26nwrYqrENEkWcewr4480Gih+zvLa17p1dl2R/K9oQoQz+PhMOeDc+S1xceJZivnsPQJ2zSXGpzG8ZN2yGk+nU4eOaMzg8yfyhiy6lCF2BMmS3/ecq5wi6F6QfgQVLcQPmvkktESDtmQvQa5QUShVN+oGieNDgjEnGWHg6iG6qNuZLGUu0AJ6+GCDF3Ye9cLdNUKANDKAbnEiWIzU6taJfIKz1XHpGaOo9VxhhOiZU1HZLmLbRDMekfSOamOuJfgw+8ksId1p9ZVWpg1gZXABMpd8Er+vgrsUYVbP7wwpo0JZbMcBD+OO2VF3pscs1Y7Py3UQLXpV7O+npPydgdgBUKcJfXJph/bqFlxsUuT919S6jfSJF7dOylcuNbBMJcccUDrviTJpodQGyqvfOd5rl5YAu5pZK7rzGdfHFZvdtK80nJepjrCjNuN0wpO5Dco9t30rMYYVzEch2iS8sJQgWb/4vXdfXhmMY8q6Fel23EFadqzGcPUw4Js8RHRV+77t8Z1glR00NBbDrNww6IzvrESbFrlWNLRJVcyLOaGo71urmTauMnc6AzTeoV8otAaj6yd0RHykALfR/h7QrEFU6V87+zHFgFtNUiHb/bgUUSBnS2Xb76k4IqlzRTtIWUjgQhRHdhHr4ryqz1u9nesDiCcADZDUPxpgAQFwRLjON/4/KGKC8QkFu5+LNI1ZRvJhQC2UFgma4ndD6aoYNwqXUzrBTJEsVtnSEUKzrPU82VGqViVW8KR0L16yoG+mB+SqFpiDCsNl3CH0GMEWHWZYP8R8m84Bn/cUpoaxMApQr66qzbI8osXoqsyicS14uuqBvGa3zvXXw4dlWMl8GTmF6AVJFZF7z8vccDZMLubISEiDq7s0Ir+iup3Nochi4GT82+XHa+v1b+ASTYwjcTkpd89PvIhb8s7nb/lD9XGO2q+ek7K5I3R9cSW3dpWHBuKa12bdQE10hgvs4aMtQx8/JeS1PFiC7HIGlWRU99SaRLLz2cmTZHDmG/lm9E5wuaOhOkLpd+UhJDdF3X8xUJy/bwpJu55eGlnEXlVQSwcIiCf1FJMVAACSHQAAUEsBAhQAFAAJAAgAumF4Uogn9RSTFQAAkh0AACMAAAAAAAAAAAAAAAAAAAAAAG9mZmxpbmVhYWRoYWFyMjAyMTAzMjQxMjEzNTM2ODUueG1sUEsFBgAAAAABAAEAUQAAAOQVAAAAAA=="
+zipdata=base64.b64decode(a)
+
+with open("test.zip","wb") as f:
+    f.write(zipdata)
+file_name = 'test.zip'
+pswd = '1234'
+
+with zipfile.ZipFile(file_name) as file:
+    # password you pass must be in the bytes you converted 'str' into 'bytes'
+    file.extractall(pwd = bytes(pswd, 'utf-8'))
+    print(file.namelist())
+    files=file.namelist()
+
+print(files[0])
+with open(files[0]) as xml_file:
+      
+    data_dict = xmltodict.parse(xml_file.read())
+    xml_file.close()
+      
+    # generate the object using json.dumps() 
+    # corresponding to json data
+      
+    json_data = json.dumps(data_dict)
+    json_data=json.loads(json_data)
+print(json_data)    
+respdata={}
+print(respdata)
+print(json_data["OfflinePaperlessKyc"]["@referenceId"])
+print(json_data["OfflinePaperlessKyc"]["UidData"]["Poi"]["@gender"])
+print(json_data["OfflinePaperlessKyc"]["UidData"]["Poi"]["@name"])
+print(json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@country"])
+print(json_data["OfflinePaperlessKyc"]["UidData"]["Poi"]["@dob"])
+print(json_data["OfflinePaperlessKyc"]["UidData"]["Pht"])
+respdata["referenceId"]=json_data["OfflinePaperlessKyc"]["@referenceId"]
+respdata["dob"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poi"]["@dob"]
+respdata["gender"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poi"]["@gender"]
+respdata["name"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poi"]["@name"]
+respdata["country"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@country"]
+respdata["care_of"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@careof"]
+respdata["house"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@house"]
+respdata["street"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@street"]
+respdata["locality"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@loc"]
+respdata["landmark"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@landmark"]
+respdata["post_office_name"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@po"]
+respdata["state"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@state"]
+respdata["pincode"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@pc"]
+respdata["vtc_name"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@vtc"]
+respdata["sub_district"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@subdist"]
+respdata["district"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poa"]["@dist"]
+respdata["mobile"]=json_data["OfflinePaperlessKyc"]["UidData"]["Poi"]["@m"]
+respdata["photo"]=json_data["OfflinePaperlessKyc"]["UidData"]["Pht"]
+print(respdata)
